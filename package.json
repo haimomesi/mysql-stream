@@ -1,0 +1,29 @@
+{
+  "name": "mysql-stream",
+  "version": "0.0.0",
+  "description": "Stream multiple MySQL tables easily",
+  "main": "mystream.js",
+  "directories": {
+    "example": "examples",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haimomesi/mysql-stream.git"
+  },
+  "keywords": [
+    "mysql",
+    "stream",
+    "database"
+  ],
+  "author": "Haim Omesi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/haimomesi/mysql-stream/issues"
+  },
+  "homepage": "https://github.com/haimomesi/mysql-stream#readme"
+}
