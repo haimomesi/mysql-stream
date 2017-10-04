@@ -9,12 +9,11 @@ Stream multiple MySQL tables easily using [mysql](https://github.com/mysqljs/mys
 var mystream = require( "mystream" );
 
 //open connection with options
-var connection = new mystream.connect('user:{password}@host{:port}/database', options);
+var streamer = new Streamer('user:{password}@host{:port}/database', options);
 
 // return a readable stream
-var readableStream = connection.Streamer
-    .sets(['table1','table2']);
-  
+var readableStream = streamer.asReadable(['table1','table2'], done);
+
 // example usage #1
 readableStream
   .on("data", function (data) {
@@ -27,7 +26,7 @@ readableStream.pipe(process.stdout);
 
 ### API
 
-###### connect( url, config )
+###### Streamer( url, config )
 
 * `url` a MySQL connection url string
 * `config` contains `highWaterMark` for now, which specifies a total number of objects. default is 16.
@@ -35,7 +34,7 @@ readableStream.pipe(process.stdout);
 
 Creates a mysql connection. Uses the [mysql.createConnection](https://github.com/mysqljs/mysql) arguments.
 
-###### sets( tableNames )
+###### asReadable( tableNames )
 
 * `tableNames` represents table names to include in the stream. could be either a string or an array
 * Returns an ReadableStream 
