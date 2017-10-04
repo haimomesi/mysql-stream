@@ -3,6 +3,11 @@ mystream-mysql
 
 Stream multiple MySQL tables easily using [mysql](https://github.com/mysqljs/mysql) API
 
+## Installation
+```bash
+  npm install -g mysql-stream 
+```
+
 ### Usage
 
 ```javascript
