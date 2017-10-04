@@ -1,69 +1,18 @@
 var mySql = require('mysql');
 var sqlString = require('sqlstring');
 var Transform = require('stream').Transform;
-var events = require('events');
-var util = require("util");
 var os = require('os');
-var q = require('Q');
 
-module.exports.connect = function (url, config) {
-
-    var connectionEmiter = new events.EventEmitter();
-
-    // initialize MySQL configuration object
-    var connectionConfig = initConnectionConfig(url, config);
-
-    // initialize config deafults
-    var config = initConfig(config);
-
-    // return a Streamer object to handle read sets
-    connectionEmiter.Streamer = new Streamer(connectionEmiter, config, connectionConfig);
-
-    return connectionEmiter;
-}
-
-function initConnectionConfig(url, config) {
-
-    var connectionConfig = {}, connectionErrors = [];
-
-    //match url provided with connection paradigm
-    var matchedUrl = url.match(/([^:]+):([^@]*)@([^\/]+)\/(.+)/);
-
-    if (!matchedUrl)
-        throw new Error('missing parameters');
-
-    connectionConfig.user = matchedUrl[1] || connectionErrors.push('No user');
-    connectionConfig.password = matchedUrl[2] || '';
-    connectionConfig.host = matchedUrl[3] || connectionErrors.push('No host');
-    connectionConfig.database = matchedUrl[4] || connectionErrors.push('No database');
-
-    // set multipleStatement to allow multiple selects in one query - has to true. don't panic, we've handled SQL injection threat.
-    connectionConfig.multipleStatements = true;
-
-    // return Error if connection paradigm is missing
-    if (connectionErrors.length > 0) {
-        throw new Error(connectionErrors.join(','));
-    }
-
-    return connectionConfig;
-}
-
-function initConfig(config) {
-
-    // for streams operating in object mode, the highWaterMark specifies a total number of objects. The default is 16.
-    config.highWaterMark = config.highWaterMark || 16;
-
-    return config;
-}
-
-function Streamer(connectionEmiter, config, connectionConfig) {
+function Streamer(url, config) {
 
     var self = this;
-
-    this._connectionEmiter = connectionEmiter;
-    this._config = config;
-    this._connectionConfig = connectionConfig;
     this._connection;
+
+    // initialize MySQL configuration object
+    this._connectionConfig = initConnectionConfig(url, config);
+
+    // initialize config deafults
+    this._config = initConfig(config);
 
     // create a mySQL connection using the connection config
     this.create = function () {
@@ -90,7 +39,7 @@ function Streamer(connectionEmiter, config, connectionConfig) {
     });
 
     // connect to DB and return readable stream with all selected sets
-    this.sets = function (sets, callback) {
+    this.asReadable = function (sets, callback) {
 
         if (!sets) {
             throw new Error('sets are required');
@@ -130,8 +79,44 @@ function Streamer(connectionEmiter, config, connectionConfig) {
     }
 
     return {
-        sets: this.sets,
+        asReadable: this.asReadable,
         connect: this.connect,
         create: this.create
     };
 }
+
+function initConnectionConfig(url, config) {
+
+    var connectionConfig = {}, connectionErrors = [];
+
+    //match url provided with connection paradigm
+    var matchedUrl = url.match(/([^:]+):([^@]*)@([^\/]+)\/(.+)/);
+
+    if (!matchedUrl)
+        throw new Error('missing parameters');
+
+    connectionConfig.user = matchedUrl[1] || connectionErrors.push('No user');
+    connectionConfig.password = matchedUrl[2] || '';
+    connectionConfig.host = matchedUrl[3] || connectionErrors.push('No host');
+    connectionConfig.database = matchedUrl[4] || connectionErrors.push('No database');
+
+    // set multipleStatement to allow multiple selects in one query - has to true. don't panic, we've handled SQL injection threat.
+    connectionConfig.multipleStatements = true;
+
+    // return Error if connection paradigm is missing
+    if (connectionErrors.length > 0) {
+        throw new Error(connectionErrors.join(','));
+    }
+
+    return connectionConfig;
+}
+
+function initConfig(config) {
+
+    // for streams operating in object mode, the highWaterMark specifies a total number of objects. The default is 16.
+    config.highWaterMark = config.highWaterMark || 16;
+
+    return config;
+}
+
+module.exports = Streamer;
