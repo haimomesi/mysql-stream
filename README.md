@@ -34,7 +34,7 @@ readableStream.pipe(process.stdout);
 ###### Streamer( url, config )
 
 * `url` a MySQL connection url string
-* `config` contains `highWaterMark` for now, which specifies a total number of objects. default is 16.
+* `config` contains `highWaterMark` for now, which determines the amount of data potentially buffered. default is 16.
 * Returns an object with a Streamer 
 
 Creates a mysql connection. Uses the [mysql.createConnection](https://github.com/mysqljs/mysql) arguments.
