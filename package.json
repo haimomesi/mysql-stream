@@ -1,6 +1,6 @@
 {
   "name": "mysql-stream",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Stream multiple MySQL tables easily",
   "main": "mystream.js",
   "directories": {
