@@ -79,9 +79,7 @@ function Streamer(url, config) {
     }
 
     return {
-        asReadable: this.asReadable,
-        connect: this.connect,
-        create: this.create
+        asReadable: this.asReadable
     };
 }
 
